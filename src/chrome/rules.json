@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "transform": {
+          "queryTransform": {
+            "addOrReplaceParams": [
+              {"key": "tag", "value": "wwsiv-21"}
+            ]
+          }
+        }
+      }
+    },
+    "condition": {
+      "urlFilter": "*://*.amazon.com/*",
+      "resourceTypes": ["main_frame", "sub_frame"]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "transform": {
+          "queryTransform": {
+            "addOrReplaceParams": [
+              {"key": "tag", "value": "wwsiv-21"}
+            ]
+          }
+        }
+      }
+    },
+    "condition": {
+      "urlFilter": "*://*.amazon.de/*",
+      "resourceTypes": ["main_frame", "sub_frame"]
+    }
+  },
+  {
+    "id": 3,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "transform": {
+          "queryTransform": {
+            "addOrReplaceParams": [
+              {"key": "tag", "value": "wwsiv-21"}
+            ]
+          }
+        }
+      }
+    },
+    "condition": {
+      "urlFilter": "*://*.amazon.co.uk/*",
+      "resourceTypes": ["main_frame", "sub_frame"]
+    }
+  },
+  {
+    "id": 4,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "transform": {
+          "queryTransform": {
+            "addOrReplaceParams": [
+              {"key": "tag", "value": "wwsiv-21"}
+            ]
+          }
+        }
+      }
+    },
+    "condition": {
+      "urlFilter": "*://*.amazon.fr/*",
+      "resourceTypes": ["main_frame", "sub_frame"]
+    }
+  },
+  {
+    "id": 5,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "transform": {
+          "queryTransform": {
+            "addOrReplaceParams": [
+              {"key": "tag", "value": "wwsiv-21"}
+            ]
+          }
+        }
+      }
+    },
+    "condition": {
+      "urlFilter": "*://*.amazon.it/*",
+      "resourceTypes": ["main_frame", "sub_frame"]
+    }
+  },
+  {
+    "id": 6,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "transform": {
+          "queryTransform": {
+            "addOrReplaceParams": [
+              {"key": "tag", "value": "wwsiv-21"}
+            ]
+          }
+        }
+      }
+    },
+    "condition": {
+      "urlFilter": "*://*.amazon.es/*",
+      "resourceTypes": ["main_frame", "sub_frame"]
+    }
+  }
+]
