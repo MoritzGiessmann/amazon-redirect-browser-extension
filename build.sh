@@ -47,7 +47,7 @@ create_zip() {
   local dir=$1
   local zip_file=$2
   echo "Creating ZIP file: $zip_file"
-  zip -r $zip_file $dir
+  zip -j -r $zip_file $dir
 }
 
 # Build the Chrome extension
