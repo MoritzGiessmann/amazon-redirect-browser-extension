@@ -1,4 +1,4 @@
-name: Web-ext Lint, Build, and Sign
+name: Web-ext Lint, Build, Sign, and Release
 
 on:
   push:
@@ -77,7 +77,7 @@ jobs:
           git push
         fi
 
-  sign-firefox:
+  release:
     needs: [lint]
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
@@ -89,6 +89,17 @@ jobs:
         node-version: '20'
         cache: 'npm'
         cache-dependency-path: '**/.github/workflows/*.yml'
+    - name: Get version
+      id: get_version
+      run: echo "VERSION=$(jq -r .version src/chrome/manifest.json)" >> $GITHUB_OUTPUT
+    - name: Clear dist folder
+      run: |
+        rm -rf dist
+        mkdir dist
+    - name: Build Chrome extension
+      run: npx --yes web-ext build --source-dir src/chrome --artifacts-dir dist --filename wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_chrome.zip --overwrite-dest
+    - name: Build Firefox extension
+      run: npx --yes web-ext build --source-dir src/firefox --artifacts-dir dist --filename wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_firefox.xpi --overwrite-dest
     - name: Sign Firefox extension
       env:
         WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
@@ -103,19 +114,27 @@ jobs:
       run: |
         signed_file=$(find dist -name "*_signed.xpi" | head -n 1)
         if [ -n "$signed_file" ]; then
-          new_name=$(echo "$signed_file" | sed -e 's/_signed//g' -e 's/\(.*\)/\L\1/')
-          mv "$signed_file" "$new_name"
-          echo "Renamed signed extension to $new_name"
+          mv "$signed_file" dist/wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_firefox.xpi
+          echo "Renamed signed extension to wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_firefox.xpi"
         else
           echo "No signed Firefox extension found"
           exit 1
         fi
-    - name: Upload Release Asset
+    - name: Upload Chrome Extension Asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./dist/wwsiv_amazon_tagger_v{version}_firefox.xpi
-        asset_name: wwsiv_amazon_tagger_firefox.xpi
+        asset_path: ./dist/wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_chrome.zip
+        asset_name: wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_chrome.zip
+        asset_content_type: application/zip
+    - name: Upload Firefox Extension Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./dist/wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_firefox.xpi
+        asset_name: wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_firefox.xpi
         asset_content_type: application/x-xpinstall
