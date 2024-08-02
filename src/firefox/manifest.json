@@ -18,8 +18,7 @@
     },
     "content_scripts": [
       {
-        "matches": ["*://*.amazon.com/*", "*://*.amazon.de/*", "*://*.amazon.co.uk/*", "*://*.amazon.fr/*", "*://*.amazon.it/*", "*://*.amazon.es/*"],
-        "js": ["content.js"]
+        "matches": ["*://*.amazon.com/*", "*://*.amazon.de/*", "*://*.amazon.co.uk/*", "*://*.amazon.fr/*", "*://*.amazon.it/*", "*://*.amazon.es/*"]
       }
     ]
   }
