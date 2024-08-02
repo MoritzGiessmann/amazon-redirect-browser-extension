@@ -22,5 +22,10 @@
         "path": "rules.json"
       }
     ]
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "amazon-tagger@wwsiv.de"
+    }
   }
 }
