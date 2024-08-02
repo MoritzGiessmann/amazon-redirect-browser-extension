@@ -15,5 +15,6 @@ Sie müssen von Hand installiert werden.
 
 * Firefox XPI aus /dist/ runterladen und entpacken
 * Auf about:debugging#/runtime/this-firefox gehen
+* In entpacktem Ordner die „manifest.json“ auswählen
 * „Temporäres Add-On laden“
 * 💸❤️
