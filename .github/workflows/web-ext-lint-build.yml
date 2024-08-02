@@ -15,12 +15,10 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '14'
-    - name: Install web-ext
-      run: npm install --global web-ext
     - name: Lint Chrome extension
-      run: web-ext lint --source-dir src/chrome
+      run: npx --yes web-ext lint --source-dir src/chrome
     - name: Lint Firefox extension
-      run: web-ext lint --source-dir src/firefox
+      run: npx --yes web-ext lint --source-dir src/firefox
 
   build:
     needs: lint
@@ -32,12 +30,10 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '14'
-    - name: Install web-ext
-      run: npm install --global web-ext
     - name: Build Chrome extension
-      run: web-ext build --source-dir src/chrome --artifacts-dir dist/chrome
+      run: npx --yes web-ext build --source-dir src/chrome --artifacts-dir dist/chrome
     - name: Build Firefox extension
-      run: web-ext build --source-dir src/firefox --artifacts-dir dist/firefox
+      run: npx --yes web-ext build --source-dir src/firefox --artifacts-dir dist/firefox
     - name: Upload built extensions
       uses: actions/upload-artifact@v2
       with:
