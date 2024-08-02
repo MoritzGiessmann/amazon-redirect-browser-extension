@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ main ]
 
-# Add this permissions block at the top level of the workflow
 permissions:
   contents: write
 
@@ -57,9 +56,11 @@ jobs:
         cache: 'npm'
         cache-dependency-path: '**/.github/workflows/*.yml'
     - name: Build Chrome extension
-      run: npx --yes web-ext build --source-dir src/chrome --artifacts-dir dist/chrome
+      run: npx --yes web-ext build --source-dir src/chrome --artifacts-dir dist --filename WWSIV_Amazon_Tagger_v1.3_chrome.zip --overwrite-dest
     - name: Build Firefox extension
-      run: npx --yes web-ext build --source-dir src/firefox --artifacts-dir dist/firefox
+      run: npx --yes web-ext build --source-dir src/firefox --artifacts-dir dist --filename WWSIV_Amazon_Tagger_v1.3_firefox.zip --overwrite-dest
+    - name: Rename Firefox extension to .xpi
+      run: mv dist/WWSIV_Amazon_Tagger_v1.3_firefox.zip dist/WWSIV_Amazon_Tagger_v1.3_firefox.xpi
     - name: Commit and push if changed
       run: |
         git config --global user.name 'GitHub Action'
