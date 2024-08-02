@@ -7,7 +7,25 @@ on:
     branches: [ main ]
 
 jobs:
+  check-commit:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - id: check
+        run: |
+          if git log -1 --pretty=%B | grep -q "Update dist folder"; then
+            echo "should_run=false" >> $GITHUB_OUTPUT
+          else
+            echo "should_run=true" >> $GITHUB_OUTPUT
+          fi
+
   lint:
+    needs: check-commit
+    if: needs.check-commit.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -18,13 +36,13 @@ jobs:
         cache: 'npm'
         cache-dependency-path: '**/.github/workflows/*.yml'
     - name: Lint Chrome extension
-      run: npx --yes web-ext lint --self-hosted --source-dir src/chrome
+      run: npx --yes web-ext lint --source-dir src/chrome
     - name: Lint Firefox extension
-      run: npx --yes web-ext lint --self-hosted --source-dir src/firefox
+      run: npx --yes web-ext lint --source-dir src/firefox
 
-  build:
-    needs: lint
-    if: github.event_name == 'push'
+  build-and-commit:
+    needs: [check-commit, lint]
+    if: github.event_name == 'push' && needs.check-commit.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -38,8 +56,16 @@ jobs:
       run: npx --yes web-ext build --source-dir src/chrome --artifacts-dir dist/chrome
     - name: Build Firefox extension
       run: npx --yes web-ext build --source-dir src/firefox --artifacts-dir dist/firefox
-    - name: Upload built extensions
-      uses: actions/upload-artifact@v2
-      with:
-        name: built-extensions
-        path: dist
+    - name: Commit and push if changed
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add dist
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Update dist folder"
+          git push
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
