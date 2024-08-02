@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  release:
+    types: [created]
 
 permissions:
   contents: write
@@ -43,7 +45,7 @@ jobs:
     - name: Lint Firefox extension
       run: npx --yes web-ext lint --source-dir src/firefox
 
-  build-sign-and-commit:
+  build:
     needs: [check-commit, lint]
     if: github.event_name == 'push' && needs.check-commit.outputs.should_run == 'true'
     runs-on: ubuntu-latest
@@ -55,10 +57,38 @@ jobs:
         node-version: '20'
         cache: 'npm'
         cache-dependency-path: '**/.github/workflows/*.yml'
+    - name: Clear dist folder
+      run: |
+        rm -rf dist
+        mkdir dist
     - name: Build Chrome extension
       run: npx --yes web-ext build --source-dir src/chrome --artifacts-dir dist --filename WWSIV_Amazon_Tagger_v{version}_chrome.zip --overwrite-dest
     - name: Build Firefox extension
       run: npx --yes web-ext build --source-dir src/firefox --artifacts-dir dist --filename WWSIV_Amazon_Tagger_v{version}_firefox.xpi --overwrite-dest
+    - name: Commit and push if changed
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add dist
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Update dist folder"
+          git push
+        fi
+
+  sign-firefox:
+    needs: [lint]
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: '**/.github/workflows/*.yml'
     - name: Sign Firefox extension
       env:
         WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
@@ -71,22 +101,21 @@ jobs:
           --artifacts-dir dist
     - name: Rename signed Firefox extension
       run: |
-        signed_file=$(find dist -name "*.xpi" -not -name "WWSIV_Amazon_Tagger_v*" | head -n 1)
+        signed_file=$(find dist -name "*_signed.xpi" | head -n 1)
         if [ -n "$signed_file" ]; then
-          version=$(jq -r .version src/firefox/manifest.json)
-          mv "$signed_file" "dist/WWSIV_Amazon_Tagger_v${version}_firefox_signed.xpi"
+          new_name=$(echo "$signed_file" | sed -e 's/_signed//g' -e 's/\(.*\)/\L\1/')
+          mv "$signed_file" "$new_name"
+          echo "Renamed signed extension to $new_name"
         else
           echo "No signed Firefox extension found"
           exit 1
         fi
-    - name: Commit and push if changed
-      run: |
-        git config --global user.name 'GitHub Action'
-        git config --global user.email 'action@github.com'
-        git add dist
-        if git diff --staged --quiet; then
-          echo "No changes to commit"
-        else
-          git commit -m "Update dist folder"
-          git push
-        fi
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./dist/wwsiv_amazon_tagger_v{version}_firefox.xpi
+        asset_name: wwsiv_amazon_tagger_firefox.xpi
+        asset_content_type: application/x-xpinstall
