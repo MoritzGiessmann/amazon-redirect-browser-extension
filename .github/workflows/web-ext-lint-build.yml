@@ -111,7 +111,7 @@ jobs:
           --artifacts-dir dist
     - name: Rename signed Firefox extension
       run: |
-        signed_file=$(find dist -name "*_signed.xpi" | head -n 1)
+        signed_file=$(find dist -name "*.xpi" -not -name "wwsiv_amazon_tagger_v*" | head -n 1)
         if [ -n "$signed_file" ]; then
           mv "$signed_file" dist/wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_firefox.xpi
           echo "Renamed signed extension to wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_firefox.xpi"
