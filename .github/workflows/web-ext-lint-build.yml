@@ -1,4 +1,4 @@
-name: Web-ext Lint and Build
+name: Web-ext Lint, Build, and Sign
 
 on:
   push:
@@ -43,7 +43,7 @@ jobs:
     - name: Lint Firefox extension
       run: npx --yes web-ext lint --source-dir src/firefox
 
-  build-and-commit:
+  build-sign-and-commit:
     needs: [check-commit, lint]
     if: github.event_name == 'push' && needs.check-commit.outputs.should_run == 'true'
     runs-on: ubuntu-latest
@@ -59,6 +59,26 @@ jobs:
       run: npx --yes web-ext build --source-dir src/chrome --artifacts-dir dist --filename WWSIV_Amazon_Tagger_v{version}_chrome.zip --overwrite-dest
     - name: Build Firefox extension
       run: npx --yes web-ext build --source-dir src/firefox --artifacts-dir dist --filename WWSIV_Amazon_Tagger_v{version}_firefox.xpi --overwrite-dest
+    - name: Sign Firefox extension
+      env:
+        WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
+        WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
+      run: |
+        npx --yes web-ext sign --channel unlisted \
+          --api-key "$WEB_EXT_API_KEY" \
+          --api-secret "$WEB_EXT_API_SECRET" \
+          --source-dir dist \
+          --artifacts-dir dist
+    - name: Rename signed Firefox extension
+      run: |
+        signed_file=$(find dist -name "*.xpi" -not -name "WWSIV_Amazon_Tagger_v*" | head -n 1)
+        if [ -n "$signed_file" ]; then
+          version=$(jq -r .version src/firefox/manifest.json)
+          mv "$signed_file" "dist/WWSIV_Amazon_Tagger_v${version}_firefox_signed.xpi"
+        else
+          echo "No signed Firefox extension found"
+          exit 1
+        fi
     - name: Commit and push if changed
       run: |
         git config --global user.name 'GitHub Action'
