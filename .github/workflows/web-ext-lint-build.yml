@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
+# Add this permissions block at the top level of the workflow
+permissions:
+  contents: write
+
 jobs:
   check-commit:
     runs-on: ubuntu-latest
@@ -67,5 +71,3 @@ jobs:
           git commit -m "Update dist folder"
           git push
         fi
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
