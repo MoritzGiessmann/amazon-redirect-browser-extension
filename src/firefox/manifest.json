@@ -20,5 +20,10 @@
       {
         "matches": ["*://*.amazon.com/*", "*://*.amazon.de/*", "*://*.amazon.co.uk/*", "*://*.amazon.fr/*", "*://*.amazon.it/*", "*://*.amazon.es/*"]
       }
-    ]
-  }
+    ],
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "amazon-tagger@wwsiv.de"
+      }
+    }
+}
