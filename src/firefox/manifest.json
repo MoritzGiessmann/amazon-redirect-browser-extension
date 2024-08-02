@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "WWSIV Amazon Tagger",
     "description": "Hilft #WWSIV zu unterstützen indem das passende Affiliate-Tag angehängt wird.",
-    "version": "1.4",
+    "version": "1.5",
     "permissions": [
       "webRequest",
       "webRequestBlocking",
