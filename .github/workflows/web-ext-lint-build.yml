@@ -18,9 +18,9 @@ jobs:
         cache: 'npm'
         cache-dependency-path: '**/.github/workflows/*.yml'
     - name: Lint Chrome extension
-      run: npx --yes web-ext lint --source-dir src/chrome
+      run: npx --yes web-ext lint --self-hosted --source-dir src/chrome
     - name: Lint Firefox extension
-      run: npx --yes web-ext lint --source-dir src/firefox
+      run: npx --yes web-ext lint --self-hosted --source-dir src/firefox
 
   build:
     needs: lint
