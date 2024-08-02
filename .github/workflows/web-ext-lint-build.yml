@@ -10,11 +10,13 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '16'
+        cache: 'npm'
+        cache-dependency-path: '**/.github/workflows/*.yml'
     - name: Lint Chrome extension
       run: npx --yes web-ext lint --source-dir src/chrome
     - name: Lint Firefox extension
@@ -25,11 +27,11 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '16'
         cache: 'npm'
         cache-dependency-path: '**/.github/workflows/*.yml'
     - name: Build Chrome extension
