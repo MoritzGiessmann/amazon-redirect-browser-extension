@@ -61,8 +61,13 @@ jobs:
       run: |
         rm -rf dist
         mkdir dist
+    - name: Prepare Chrome extension
+      run: |
+        cp -r src/chrome chrome_temp
+        jq 'del(.browser_specific_settings)' chrome_temp/manifest.json > chrome_temp/manifest_temp.json
+        mv chrome_temp/manifest_temp.json chrome_temp/manifest.json
     - name: Build Chrome extension
-      run: npx --yes web-ext build --source-dir src/chrome --artifacts-dir dist --filename WWSIV_Amazon_Tagger_v{version}_chrome.zip --overwrite-dest
+      run: npx --yes web-ext build --source-dir chrome_temp --artifacts-dir dist --filename WWSIV_Amazon_Tagger_v{version}_chrome.zip --overwrite-dest
     - name: Build Firefox extension
       run: npx --yes web-ext build --source-dir src/firefox --artifacts-dir dist --filename WWSIV_Amazon_Tagger_v{version}_firefox.xpi --overwrite-dest
     - name: Commit and push if changed
@@ -76,6 +81,9 @@ jobs:
           git commit -m "Update dist folder"
           git push
         fi
+    - name: Clean up
+      if: always()
+      run: rm -rf chrome_temp
 
   release:
     if: github.event_name == 'release'
@@ -95,8 +103,13 @@ jobs:
       run: |
         rm -rf dist
         mkdir dist
+    - name: Prepare Chrome extension
+      run: |
+        cp -r src/chrome chrome_temp
+        jq 'del(.browser_specific_settings)' chrome_temp/manifest.json > chrome_temp/manifest_temp.json
+        mv chrome_temp/manifest_temp.json chrome_temp/manifest.json
     - name: Build Chrome extension
-      run: npx --yes web-ext build --source-dir src/chrome --artifacts-dir dist --filename wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_chrome.zip --overwrite-dest
+      run: npx --yes web-ext build --source-dir chrome_temp --artifacts-dir dist --filename wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_chrome.zip --overwrite-dest
     - name: Build Firefox extension
       run: npx --yes web-ext build --source-dir src/firefox --artifacts-dir dist --filename wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_firefox.xpi --overwrite-dest
     - name: Sign Firefox extension
@@ -137,3 +150,6 @@ jobs:
         asset_path: ./dist/wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_firefox.xpi
         asset_name: wwsiv_amazon_tagger_v${{ steps.get_version.outputs.VERSION }}_firefox.xpi
         asset_content_type: application/x-xpinstall
+    - name: Clean up
+      if: always()
+      run: rm -rf chrome_temp
