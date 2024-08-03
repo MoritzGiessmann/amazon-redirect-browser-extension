@@ -1,19 +1,20 @@
 # WWSIV Support durch unser Amazon Affiliate Firefox Add-On / Chrome Extension
 
-Die Extensions sind im /dist/ Ordner.
+Die Extensions sind den jeweiligen [Releases](https://github.com/MoritzGiessmann/amazon-redirect-browser-extension/releases) angehängt.
 
 Sie müssen von Hand installiert werden.
 
 ## Chrome
 
-* Chrome Zip aus /dist/ runterladen und entpacken
+* Chrome Zip aus dem [neusten Release](https://github.com/MoritzGiessmann/amazon-redirect-browser-extension/releases/latest) runterladen und entpacken
 * Auf chrome://extensions/ gehen
-* „Entpackte Erweiterung laden“
+* Toggle „Entwicklermodus“ aktivieren
+* Entweder entpacken und „Entpackte Erweiterung laden“, oder das ZIP auf die Einstellungsseite droppen
 * 💸❤️
 
 ## Firefox
 
-* Firefox XPI aus /dist/ runterladen
+* Firefox XPI aus dem [neusten Release](https://github.com/MoritzGiessmann/amazon-redirect-browser-extension/releases/latest) runterladen
 * Auf about:addons gehen
 * Klick -> ⚙️ -> Add-on aus Datei installieren
 * 💸❤️
