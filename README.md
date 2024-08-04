@@ -6,15 +6,15 @@ Sie müssen von Hand installiert werden.
 
 ## Chrome
 
-* Chrome Zip aus dem [neusten Release](https://github.com/MoritzGiessmann/amazon-redirect-browser-extension/releases/latest) runterladen und entpacken
-* Auf chrome://extensions/ gehen
+* Chrome Zip aus dem [neuesten Release](https://github.com/MoritzGiessmann/amazon-redirect-browser-extension/releases/latest) runterladen und entpacken
+* Auf [chrome://extensions](chrome://extensions/) gehen
 * Toggle „Entwicklermodus“ aktivieren
 * Entweder entpacken und „Entpackte Erweiterung laden“, oder das ZIP auf die Einstellungsseite droppen
 * 💸❤️
 
 ## Firefox
 
-* Firefox XPI aus dem [neusten Release](https://github.com/MoritzGiessmann/amazon-redirect-browser-extension/releases/latest) runterladen
+* Firefox XPI aus dem [neuesten Release](https://github.com/MoritzGiessmann/amazon-redirect-browser-extension/releases/latest) runterladen
 * Auf about:addons gehen
 * Klick -> ⚙️ -> Add-on aus Datei installieren
 * 💸❤️
